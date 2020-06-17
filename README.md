@@ -1,2 +1,6 @@
 # File-Management
-Two ways of implementing data storage into an indexed file.
+Two data storage programs:
+<ul>
+  <li>Data storage using Key & Data files</li>
+  <li>Data storage using a hash table saved in a file</li>
+</ul>
