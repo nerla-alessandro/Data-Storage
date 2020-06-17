@@ -8,9 +8,9 @@ FILE *fk;
 
 
 typedef struct{
-    int id; //Chiave Primaria
-    char fName[15]; //Nome
-    char lName[15]; //Cognome
+    int id; //Primary Key of the record
+    char fName[15]; //Name
+    char lName[15]; //Surname
 }record;
 
 record buffer[100];
@@ -19,7 +19,7 @@ char query[15];
 char choice;
 int maxIndex;
 
-int getNumRecords(){    //Ritorna il numero di record
+int getNumRecords(){    //Returns the number of saved records
     fd=fopen("Data.txt", "r+b");
     long curPos, fileSize;
     curPos = ftell(fd);
@@ -27,51 +27,51 @@ int getNumRecords(){    //Ritorna il numero di record
     fileSize=ftell(fd);
     fseek(fd, curPos, 0);
     fclose(fd);
-    return (fileSize/sizeof(record)); //Divide la dimensione del file per la dimensione del record
+    return (fileSize/sizeof(record));
 }
 
-void openDataFile(){    //Apre file Dati
+void openDataFile(){
     fd = fopen("Data.txt", "a+b");
 }
 
-void openKeyFile(){     //Apre file Chiavi
+void openKeyFile(){
     fk = fopen("Key.txt", "w+b");
 }
 
-void closeDataFile(){   //Chiude file Dati
+void closeDataFile(){
     fclose(fd);
 }
 
-void closeKeyFile(){    //Chiude file Chiavi
+void closeKeyFile(){
     fclose(fk);
 }
 
-void writeDataFile(){   //Aggiunge record al file Dati
+void writeDataFile(){   //Adds a record to the Data File
     openDataFile();
     printf("Insert \"END\" to save file and exit \n");
     for(int i=maxIndex; i<=100; i++){
         buffer[i].id=i;
         printf("\nEnter First Name: ");
         scanf("%s", buffer[i].fName); //L
-        if(strcmp(buffer[i].fName, "END") == 0){  //Controlla se l'utente inserisce il comando per terminare la scrittura
+        if(strcmp(buffer[i].fName, "END") == 0){  //Checks if the user inputs the command needed to end the writing procedure
             printf("\n");
             printf("Stopped Writing Data \n\n");
             break;
         }
         printf("\nEnter Last Name: ");
-        scanf("%s", buffer[i].lName); //Legge la stringa inserita
-        if(strcmp(buffer[i].lName, "END") == 0){  //Controlla se l'utente inserisce il comando per terminare la scrittura
+        scanf("%s", buffer[i].lName); //Reads the input string
+        if(strcmp(buffer[i].lName, "END") == 0){  //Checks if the user inputs the command needed to end the writing procedure
             printf("\n");
             printf("Stopped Writing Data \n\n");
             break;
         }
         fseek(fd, 0, SEEK_END);
-        fwrite(&buffer[i], sizeof(record), 1, fd);    //Scrive sul file il record inserito
+        fwrite(&buffer[i], sizeof(record), 1, fd);    //Writes the record on file
     }
     closeDataFile();
 }
 
-void readDataFile(){    //Legge il file Dati ed inserisce il suo contenuto nell'array buffer
+void readDataFile(){    //Reads the Data File and adds its content to a buffer
     openDataFile();
     fread(&buffer, sizeof(record), maxIndex, fd);
     for(int i=0; i<maxIndex; i++){
@@ -81,7 +81,7 @@ void readDataFile(){    //Legge il file Dati ed inserisce il suo contenuto nell'
     closeDataFile();
 }
 
-void writeKeyFile(){    //Scrive il file Chiavi ordinando il file Dati con la tecnica dell'insertion sort
+void writeKeyFile(){    //Creates the Index File and sorts it
     record V[100]={0};
     maxIndex=getNumRecords();
     char n[15];
@@ -107,7 +107,7 @@ void writeKeyFile(){    //Scrive il file Chiavi ordinando il file Dati con la te
     closeKeyFile();
 }
 
-void readKeyFile(){ //Legge il file Chiavi ed inserisce il suo contenuto nell'array buffer
+void readKeyFile(){ //Reads the Index File and adds its content to a buffer
     fk = fopen("Key.txt", "a+b");
     fread(&buffer, sizeof(record), maxIndex, fk);
     for(int i=0; i<maxIndex; i++){
@@ -117,7 +117,7 @@ void readKeyFile(){ //Legge il file Chiavi ed inserisce il suo contenuto nell'ar
     closeKeyFile();
 }
 
-void binarySearch(char query[15]){  //Cerca il record nel file Chiavi con la tecnica della ricerca binaria e stampa i risultati
+void binarySearch(char query[15]){  //Searches via Binary Search the record's location from the Index file and prints it
     int nMin, nMax, nMid;
     fk = fopen("Key.txt", "a+b");
     fread(&buffer, sizeof(record), maxIndex, fk);
@@ -148,7 +148,7 @@ void binarySearch(char query[15]){  //Cerca il record nel file Chiavi con la tec
         printf("\"%s\" can't be found\n", query);
 }
 
-void deleteRecord(int idDelete){    //Elimina un record sovrascrivendolo con il record di Reset (record vuoto)
+void deleteRecord(int idDelete){    //Deletes a record by overwriting it with an empty record
     openDataFile();
     fread(&buffer, sizeof(record), maxIndex, fd);
     closeDataFile();
@@ -176,7 +176,7 @@ int main()
     char delFlag;
 
 
-    do{ //Stampa la lista comandi del Menu
+    do{ //Prints the possible commands
         printf("Menu: \n\n");
         printf("    1: Add Record\n\n");
         printf("    2: Search Record\n\n");
@@ -257,9 +257,9 @@ int main()
         break;
         }
 
-        choice=getchar();   //Pulisce il buffer della tastiera
+        choice=getchar();   //Clears the buffer
 
-    }while(!exitFlag);  //Ripete il menu fino a quando l'utente non inserisce il comando per uscire
+    }while(!exitFlag);  //Prints the command menu until the user exits via appropriate command
 
     return 0;
 }
